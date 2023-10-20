@@ -1,4 +1,4 @@
-import { SourceType, StartParameters } from "../models/start-parameters";
+import { SourceType, StartParameters } from "../models/scrap-parameters";
 
 function isValidSourceType(str: string): str is SourceType {
   return Object.values(SourceType).includes(str as SourceType);

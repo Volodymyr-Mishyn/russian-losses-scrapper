@@ -6,13 +6,17 @@
   "scripts": {
     "dev": "nodemon",
     "start": "ts-node ./src/index.ts",
-    "start:mod": "ts-node ./src/index.ts --source=mod --notHeadless",
-    "start:oryx": "ts-node ./src/index.ts --source=oryx --notHeadless"
+    "start:mod": "ts-node ./src/index.ts --source=mod",
+    "start:oryx": "ts-node ./src/index.ts --source=oryx",
+    "start:mod:nh": "ts-node ./src/index.ts --source=mod --notHeadless",
+    "start:oryx:nh": "ts-node ./src/index.ts --source=oryx --notHeadless"
   },
   "author": "Volodymyr Mishyn",
   "license": "ISC",
   "dependencies": {
+    "@types/jsdom": "^21.1.4",
     "@types/puppeteer": "^5.4.6",
+    "jsdom": "^22.1.0",
     "minimist": "^1.2.8",
     "puppeteer": "^17.0.0"
   },

@@ -1,7 +1,7 @@
 const minimist = require("minimist");
 import { processCLIParameters } from "./_helpers/process-cli-parameters";
 import { startBrowser } from "./browser";
-import { StartParameters } from "./models/start-parameters";
+import { StartParameters } from "./models/scrap-parameters";
 import { PageScrapperFactory } from "./scrappers/page-scrapper.factory";
 
 const cliArgs = minimist(process.argv.slice(2));
