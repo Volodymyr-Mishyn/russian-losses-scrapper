@@ -14,14 +14,16 @@
   "author": "Volodymyr Mishyn",
   "license": "ISC",
   "dependencies": {
-    "@types/jsdom": "^21.1.4",
-    "@types/puppeteer": "^5.4.6",
     "jsdom": "^22.1.0",
+    "lodash": "^4.17.21",
     "minimist": "^1.2.8",
     "puppeteer": "^17.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.7.13",
+    "@types/jsdom": "^21.1.4",
+    "@types/lodash": "^4.14.200",
+    "@types/puppeteer": "^5.4.6",
     "concurrently": "^7.3.0",
     "husky": "^8.0.1",
     "nodemon": "^2.0.19",

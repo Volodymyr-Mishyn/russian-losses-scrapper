@@ -1,4 +1,3 @@
-
 export interface MODDayScrapResult {
   date: string;
   casualties: Array<string>;

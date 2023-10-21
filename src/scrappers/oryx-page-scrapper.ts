@@ -25,8 +25,8 @@ export class OryxPageScrapper extends PageScrapper<ORYXScrapResult> {
         let index = 0;
         const H3_TAG = "H3";
         const UL_TAG = "UL";
+        const P_TAG = "P";
         const length = infoList.length;
-
         while (index < length - 1) {
           const currentElement = infoList[index];
           const nextElement = infoList[index + 1];
@@ -35,14 +35,15 @@ export class OryxPageScrapper extends PageScrapper<ORYXScrapResult> {
             if (nextElement?.tagName === UL_TAG) {
               result.entities.push({
                 summary: currentElement.textContent,
-                list: nextElement.innerHTML,
+                list: [...nextElement.children].map(
+                  (liElement) => liElement.innerHTML
+                ),
               });
               index++;
-            } else {
+            } else if (nextElement?.tagName === P_TAG) {
               result.title = currentElement.textContent;
             }
           }
-
           index++;
         }
         return result;
