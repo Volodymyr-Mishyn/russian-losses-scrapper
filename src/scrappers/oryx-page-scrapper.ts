@@ -1,11 +1,11 @@
-import { ORYXScrapResult } from "../models/scrap-results/oryx-scrap-result";
+import { OryxScrapResult } from "../models/scrap-results/oryx-scrap-result";
 import { PageScrapper } from "./page-scrapper";
 
-export class OryxPageScrapper extends PageScrapper<ORYXScrapResult> {
+export class OryxPageScrapper extends PageScrapper<OryxScrapResult> {
   protected baseUrl: string =
     "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html";
 
-  protected async innerScrap(): Promise<ORYXScrapResult> {
+  protected async innerScrap(): Promise<OryxScrapResult> {
     await this.page.waitForSelector("div.post-body.entry-content");
     return await this.page.$$eval(
       "div.post-body.entry-content",

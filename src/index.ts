@@ -1,5 +1,5 @@
 const minimist = require("minimist");
-import { Page } from "puppeteer";
+import { Browser, Page } from "puppeteer";
 import { processCLIParameters } from "./_helpers/process-cli-parameters";
 import { startBrowser } from "./browser";
 import { FormatterFactory } from "./formatters/formatter.factory";
@@ -21,11 +21,7 @@ async function formatData(scrappedData: ScrapResult<unknown>) {
   return await formatter.format();
 }
 
-async function main() {
-  const browser = await startBrowser(startParameters.headless);
-  if (!browser) {
-    return;
-  }
+async function main(browser: Browser) {
   const page = await browser.newPage();
   const scrappedData = await scrapeData(startParameters, page);
   if (scrappedData) {
@@ -34,13 +30,17 @@ async function main() {
       console.log(result);
     }
   }
-  await browser.close();
 }
 
 (async () => {
+  const browser = await startBrowser(startParameters.headless);
+  if (!browser) {
+    return;
+  }
   try {
-    await main();
+    await main(browser);
   } catch (error) {
     console.error(error);
   }
+  await browser.close();
 })();

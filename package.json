@@ -4,12 +4,11 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "nodemon",
     "start": "ts-node ./src/index.ts",
     "start:mod": "ts-node ./src/index.ts --source=mod",
     "start:oryx": "ts-node ./src/index.ts --source=oryx",
-    "start:mod:nh": "ts-node ./src/index.ts --source=mod --notHeadless",
-    "start:oryx:nh": "ts-node ./src/index.ts --source=oryx --notHeadless"
+    "dev:mod:nh": "ts-node ./src/index.ts --source=mod --notHeadless",
+    "dev:oryx:nh": "ts-node ./src/index.ts --source=oryx --notHeadless"
   },
   "author": "Volodymyr Mishyn",
   "license": "ISC",
