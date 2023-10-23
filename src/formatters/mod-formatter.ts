@@ -1,14 +1,7 @@
-import { toISOString } from "../_helpers/date";
-import {
-  MODDayFormatResult,
-  MODEntityLoss,
-  MODFormatResult,
-} from "../models/format-results/mod-format-result";
-import {
-  MODDayScrapResult,
-  MODScrapResult,
-} from "../models/scrap-results/mod-scrap-result";
-import { Formatter } from "./formatter";
+import { toISOString } from '../_helpers/date';
+import { MODDayFormatResult, MODEntityLoss, MODFormatResult } from '../models/format-results/mod-format-result';
+import { MODDayScrapResult, MODScrapResult } from '../models/scrap-results/mod-scrap-result';
+import { Formatter } from './formatter';
 
 export class MODFormatter extends Formatter<MODScrapResult, MODFormatResult> {
   private _processSingleCasualty(casualty: string): MODEntityLoss | null {
@@ -22,9 +15,7 @@ export class MODFormatter extends Formatter<MODScrapResult, MODFormatResult> {
     return { name, total, increment };
   }
 
-  private _processSingleDay(
-    dayData: MODDayScrapResult
-  ): MODDayFormatResult | null {
+  private _processSingleDay(dayData: MODDayScrapResult): MODDayFormatResult | null {
     const date = toISOString(dayData.date);
     if (!date) {
       return null;

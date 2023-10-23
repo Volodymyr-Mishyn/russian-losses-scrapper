@@ -1,11 +1,11 @@
-const minimist = require("minimist");
-import { Browser, Page } from "puppeteer";
-import { processCLIParameters } from "./_helpers/process-cli-parameters";
-import { startBrowser } from "./browser";
-import { FormatterFactory } from "./formatters/formatter.factory";
-import { StartParameters } from "./models/scrap-parameters";
-import { PageScrapperFactory } from "./scrappers/page-scrapper.factory";
-import { ScrapResult } from "./models/scrap-results/scrap-result";
+const minimist = require('minimist');
+import { Browser, Page } from 'puppeteer';
+import { processCLIParameters } from './_helpers/process-cli-parameters';
+import { startBrowser } from './browser';
+import { FormatterFactory } from './formatters/formatter.factory';
+import { StartParameters } from './models/scrap-parameters';
+import { PageScrapperFactory } from './scrappers/page-scrapper.factory';
+import { ScrapResult } from './models/scrap-results/scrap-result';
 
 const cliArgs = minimist(process.argv.slice(2));
 const startParameters: StartParameters = processCLIParameters(cliArgs);

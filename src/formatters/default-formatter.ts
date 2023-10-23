@@ -1,4 +1,4 @@
-import { Formatter } from "./formatter";
+import { Formatter } from './formatter';
 
 export class DefaultFormatter extends Formatter<unknown, unknown> {
   protected innerFormat(): Promise<unknown> {

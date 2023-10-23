@@ -1,6 +1,6 @@
 export enum SourceType {
-  MOD = "mod",
-  ORYX = "oryx",
+  MOD = 'mod',
+  ORYX = 'oryx',
 }
 export type Source = SourceType.MOD | SourceType.ORYX;
 

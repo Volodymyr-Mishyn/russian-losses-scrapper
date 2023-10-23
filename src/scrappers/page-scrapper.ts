@@ -1,6 +1,6 @@
-import { Page } from "puppeteer";
-import { ScrapResult } from "../models/scrap-results/scrap-result";
-import { Source } from "../models/scrap-parameters";
+import { Page } from 'puppeteer';
+import { ScrapResult } from '../models/scrap-results/scrap-result';
+import { Source } from '../models/scrap-parameters';
 
 export abstract class PageScrapper<T> {
   protected abstract baseUrl: string;
@@ -21,7 +21,7 @@ export abstract class PageScrapper<T> {
         result,
       };
     } catch (e) {
-      console.log("Error while scrapping:", e);
+      console.log('Error while scrapping:', e);
       return null;
     }
   }

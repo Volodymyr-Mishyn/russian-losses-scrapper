@@ -1,4 +1,4 @@
-import { Source } from "../scrap-parameters";
+import { Source } from '../scrap-parameters';
 
 export interface ScrapResult<T> {
   date: string;

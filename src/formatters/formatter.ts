@@ -1,4 +1,4 @@
-import { clone } from "lodash";
+import { clone } from 'lodash';
 
 export abstract class Formatter<D, R> {
   protected data: D;
