@@ -58,6 +58,40 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
     };
   }
 
+  private _extractCountAndName(text: string): { count: number; name: string } | null {
+    const match = text.match(/^(\d+) (.+):$/);
+    if (match) {
+      const count = parseInt(match[1], 10);
+      const name = match[2];
+      return { count, name };
+    }
+    return null;
+  }
+
+  private _processLinkContent(text: string, link: string, oryxEntity: OryxDetailedEntity): void {
+    const textWithoutBracers = text.replaceAll('(', '').replaceAll(')', '');
+    const splitString = textWithoutBracers.split(',');
+    const category = splitString.pop()?.trim();
+    if (!category) {
+      return;
+    }
+    const categoryKey: keyof OryxDetailedEntityInfo | undefined = categoryMap.get(category);
+    if (!categoryKey) {
+      return;
+    }
+    if (link) {
+      oryxEntity[categoryKey].list.push(link);
+    }
+    let numbers = splitString.join().match(/\d+/g);
+    if (numbers && numbers?.length > 0) {
+      const maxValue = numbers.at(-1) || '0';
+      const numberValue = this._processStringNumber(maxValue);
+      if (oryxEntity[categoryKey].count < numberValue) {
+        oryxEntity[categoryKey].count = numberValue;
+      }
+    }
+  }
+
   private _processEntityListElement(source: string): OryxDetailedEntity | null {
     const oryxEntity: OryxDetailedEntity = {
       name: '',
@@ -77,41 +111,18 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
       })
       .text()
       .trim();
-    const countAndNameMatch = extractedText.match(/^(\d+) (.+):$/);
+    const countAndNameMatch = this._extractCountAndName(extractedText);
     if (!countAndNameMatch) {
       return null;
     }
-
-    const count = parseInt(countAndNameMatch[1], 10);
-    const name = countAndNameMatch[2];
+    const { count, name } = countAndNameMatch;
     oryxEntity.name = name;
     oryxEntity.count = count;
-
     const detailElements = $('a');
     detailElements.toArray().forEach((linkElement) => {
-      const text = $(linkElement).text().toLowerCase();
-      const link = $(linkElement).attr('href');
-      const textWithoutBracers = text.replaceAll('(', '').replaceAll(')', '');
-      const splitString = textWithoutBracers.split(',');
-      const category = splitString.pop()?.trim();
-      if (!category) {
-        return;
-      }
-      const categoryKey: keyof OryxDetailedEntityInfo | undefined = categoryMap.get(category);
-      if (!categoryKey) {
-        return;
-      }
-      if (link) {
-        oryxEntity[categoryKey].list.push(link);
-      }
-      let numbers = splitString.join().match(/\d+/g);
-      if (numbers && numbers?.length > 0) {
-        const maxValue = numbers.at(-1) || '0';
-        const numberValue = this._processStringNumber(maxValue);
-        if (oryxEntity[categoryKey].count < numberValue) {
-          oryxEntity[categoryKey].count = numberValue;
-        }
-      }
+      const text = $(linkElement).text().toLowerCase() || '';
+      const link = $(linkElement).attr('href') || '';
+      this._processLinkContent(text, link, oryxEntity);
     });
     return oryxEntity;
   }
