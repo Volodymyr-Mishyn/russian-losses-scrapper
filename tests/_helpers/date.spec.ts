@@ -17,7 +17,7 @@ describe('date', () => {
       });
 
       it('should return null for a non-date input', () => {
-        const ukrainianDateString = 'This is not a date';
+        const ukrainianDateString = '1111';
         const result = toISOString(ukrainianDateString);
         expect(result).toBeNull();
       });
