@@ -9,6 +9,7 @@ export abstract class Formatter<D, R> {
 
   public async format(): Promise<string> {
     const formatted = await this.innerFormat();
-    return JSON.stringify(formatted, null, 2);
+    // return JSON.stringify(formatted, null, 2);
+    return JSON.stringify(formatted);
   }
 }
