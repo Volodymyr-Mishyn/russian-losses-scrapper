@@ -7,7 +7,7 @@ export class OryxPageScrapper extends PageScrapper<OryxScrapResult> {
   protected async innerScrap(): Promise<OryxScrapResult> {
     await this.page.waitForSelector('div.post-body.entry-content');
     return await this.page.$$eval('div.post-body.entry-content', (container: Array<Element>) => {
-      if (container.length > 1) {
+      if (container.length === 0 || container.length > 1) {
         return null;
       }
       const lastDiv = [...container[0].children].at(-1);
