@@ -20,8 +20,8 @@ export abstract class PageScrapper<T> {
         type: this._type,
         result,
       };
-    } catch (e) {
-      console.log('Error while scrapping:', e);
+    } catch (error) {
+      console.log('Error while scrapping:', (error as any).message);
       return null;
     }
   }
