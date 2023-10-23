@@ -5,7 +5,7 @@ import { MinfinPageScrapper } from 'src/scrappers/minfin-page-scrapper';
 
 class MockPage {
   async $$() {
-    return [{ click: jest.fn }];
+    return [{ click: jest.fn, scrollIntoView: jest.fn }];
   }
 
   async $$eval(selector: string, pageFunction: (elements: Array<Element>) => any) {
@@ -55,15 +55,17 @@ describe('MinfinPageScrapper', () => {
         expect(result?.type).toEqual(source);
       });
       describe('when full scrapping', () => {
-        const link = { click: jest.fn };
+        const link = { click: jest.fn, scrollIntoView: jest.fn };
         beforeEach(() => {
           jest.spyOn(link, 'click');
+          jest.spyOn(link, 'scrollIntoView');
           jest.spyOn(page, '$$').mockImplementation(async () => [link]);
         });
         it('should open all inner links', async () => {
           const scrapper = new MinfinPageScrapper(page as unknown as Page, source, true);
           await scrapper.scrapPage();
           expect(link.click).toHaveBeenCalledTimes(1);
+          expect(link.scrollIntoView).toHaveBeenCalledTimes(1);
         });
       });
 

@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { ElementHandle, Page } from 'puppeteer';
 import { PageScrapper } from './page-scrapper';
 import { delay } from '../_helpers/delay';
 import { MODDayScrapResult, MODScrapResult } from '../models/scrap-results/mod-scrap-result';
@@ -14,9 +14,10 @@ export class MinfinPageScrapper extends PageScrapper<MODScrapResult> {
   private async _openMonthsLinks() {
     const links = await this.page.$$('div.ajaxmonth a');
     for (let link of links) {
-      await delay(250);
+      await delay(500);
+      link.scrollIntoView();
       await link.click();
-      await this.page.waitForNetworkIdle();
+      await delay(500);
     }
   }
 
