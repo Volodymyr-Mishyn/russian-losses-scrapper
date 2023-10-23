@@ -1,5 +1,5 @@
 export interface OryxStat {
-  all: number;
+  count: number;
   destroyed: number;
   damaged: number;
   abandoned: number;
@@ -11,20 +11,23 @@ export interface OryxStatRoot {
   statistics: OryxStat;
 }
 
-export interface OryxDetailedEntityInfo {
+export interface OryxDetailedEntityCategoryInfo {
   count: number;
   list: Array<string>;
 }
 
-export interface OryxDetailedEntity {
+export interface OryxDetailedEntityInfo {
+  destroyed: OryxDetailedEntityCategoryInfo;
+  damaged: OryxDetailedEntityCategoryInfo;
+  captured: OryxDetailedEntityCategoryInfo;
+  abandoned: OryxDetailedEntityCategoryInfo;
+  damagedAndCaptured: OryxDetailedEntityCategoryInfo;
+  damagedAndAbandoned: OryxDetailedEntityCategoryInfo;
+}
+
+export interface OryxDetailedEntity extends OryxDetailedEntityInfo {
   name: string;
   count: number;
-  destroyed: OryxDetailedEntityInfo;
-  damaged: OryxDetailedEntityInfo;
-  captured: OryxDetailedEntityInfo;
-  abandoned: OryxDetailedEntityInfo;
-  damagedAndCaptured: OryxDetailedEntityInfo;
-  damagedAndAbandoned: OryxDetailedEntityInfo;
 }
 
 export interface OryxEntityType extends OryxStatRoot {

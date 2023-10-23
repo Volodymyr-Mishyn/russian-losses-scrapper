@@ -1,24 +1,37 @@
-import { OryxEntityType, OryxFormatResult, OryxStat, OryxStatRoot } from '../models/format-results/oryx-format-result';
-import { OryxScrapResult } from '../models/scrap-results/oryx-scrap-result';
+import {
+  OryxDetailedEntity,
+  OryxDetailedEntityInfo,
+  OryxEntityType,
+  OryxFormatResult,
+  OryxStat,
+  OryxStatRoot,
+} from '../models/format-results/oryx-format-result';
+import { OryxEntityTypeScrapResult, OryxScrapResult } from '../models/scrap-results/oryx-scrap-result';
 import { Formatter } from './formatter';
 import * as cheerio from 'cheerio';
 
-const categoryToActual: Array<[string, string]> = [
+const categoryToActual: Array<[string, keyof OryxDetailedEntityInfo]> = [
   ['destroyed', 'destroyed'],
   ['damaged', 'damaged'],
   ['captured', 'captured'],
   ['abandoned', 'abandoned'],
-  ['damagedAndCaptured', 'damaged and captured'],
-  ['damagedAndAbandoned', 'damaged and abandoned'],
+  ['damaged and captured', 'damagedAndCaptured'],
+  ['damaged and abandoned', 'damagedAndAbandoned'],
 ];
-const categoryMap = new Map<string, string>(categoryToActual);
-//TODO: finish this class
+const categoryMap = new Map<string, keyof OryxDetailedEntityInfo>(categoryToActual);
 export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> {
+  private _processStringNumber(number: string): number {
+    if (!number) {
+      return 0;
+    }
+    return parseInt(number, 10);
+  }
+
   private _processTitleName(title: string): string {
-    const nameRegex = /(.+?)\s+-/;
+    const nameRegex = /(.*?)\s[-(]/;
     const nameMatch = title.match(nameRegex);
     if (!nameMatch || !nameMatch[1]) {
-      throw new Error('Name not found.');
+      throw new Error('Name not found in the input string.');
     }
     return nameMatch[1].trim();
   }
@@ -26,15 +39,15 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
   private _processTitleStat(title: string): OryxStat {
     const statsRegex = /(\d+)/g;
     const statsMatches = title.match(statsRegex);
-    if (!statsMatches || statsMatches.length < 5) {
+    if (!statsMatches || statsMatches.length < 1) {
       throw new Error('Statistics not found');
     }
     return {
-      all: parseInt(statsMatches[0], 10),
-      destroyed: parseInt(statsMatches[1], 10),
-      damaged: parseInt(statsMatches[2], 10),
-      abandoned: parseInt(statsMatches[3], 10),
-      captured: parseInt(statsMatches[4], 10),
+      count: this._processStringNumber(statsMatches[0]),
+      destroyed: this._processStringNumber(statsMatches[1]),
+      damaged: this._processStringNumber(statsMatches[2]),
+      abandoned: this._processStringNumber(statsMatches[3]),
+      captured: this._processStringNumber(statsMatches[4]),
     };
   }
 
@@ -45,7 +58,78 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
     };
   }
 
+  private _processEntityListElement(source: string): OryxDetailedEntity | null {
+    const oryxEntity: OryxDetailedEntity = {
+      name: '',
+      count: 0,
+      destroyed: { count: 0, list: [] },
+      damaged: { count: 0, list: [] },
+      captured: { count: 0, list: [] },
+      abandoned: { count: 0, list: [] },
+      damagedAndCaptured: { count: 0, list: [] },
+      damagedAndAbandoned: { count: 0, list: [] },
+    };
+    const $ = cheerio.load(`<div>${source}</div>`);
+    const extractedText = $('div')
+      .contents()
+      .filter((_, node) => {
+        return node.type === 'text' && $(node).prev().is('img');
+      })
+      .text()
+      .trim();
+    const countAndNameMatch = extractedText.match(/^(\d+) (.+):$/);
+    if (!countAndNameMatch) {
+      return null;
+    }
+
+    const count = parseInt(countAndNameMatch[1], 10);
+    const name = countAndNameMatch[2];
+    oryxEntity.name = name;
+    oryxEntity.count = count;
+
+    const detailElements = $('a');
+    detailElements.toArray().forEach((linkElement) => {
+      const text = $(linkElement).text().toLowerCase();
+      const link = $(linkElement).attr('href');
+      const textWithoutBracers = text.replaceAll('(', '').replaceAll(')', '');
+      const splitString = textWithoutBracers.split(',');
+      const category = splitString.pop()?.trim();
+      if (!category) {
+        return;
+      }
+      const categoryKey: keyof OryxDetailedEntityInfo | undefined = categoryMap.get(category);
+      if (!categoryKey) {
+        return;
+      }
+      if (link) {
+        oryxEntity[categoryKey].list.push(link);
+      }
+      let numbers = splitString.join().match(/\d+/g);
+      if (numbers && numbers?.length > 0) {
+        const maxValue = numbers.at(-1) || '0';
+        const numberValue = this._processStringNumber(maxValue);
+        if (oryxEntity[categoryKey].count < numberValue) {
+          oryxEntity[categoryKey].count = numberValue;
+        }
+      }
+    });
+    return oryxEntity;
+  }
+
+  private _processEntityType(entityType: OryxEntityTypeScrapResult): OryxEntityType {
+    const { name, statistics } = this._processTitle(entityType.summary);
+    return {
+      name,
+      statistics,
+      details: entityType.list
+        .map((element) => this._processEntityListElement(element))
+        .filter((result) => !!result) as Array<OryxDetailedEntity>,
+    };
+  }
+
   protected innerFormat(): Promise<OryxFormatResult> {
-    throw new Error('Method not implemented.');
+    const titleFormatted = this._processTitle(this.data.title);
+    const entitiesFormatted = this.data.entities.map((entityType) => this._processEntityType(entityType));
+    return Promise.resolve({ ...titleFormatted, entities: entitiesFormatted });
   }
 }
