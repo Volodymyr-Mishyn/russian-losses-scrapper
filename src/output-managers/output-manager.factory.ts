@@ -8,8 +8,8 @@ import { ScrapResult } from '../models/scrap-results/scrap-result';
 
 export class OutputManagerFactory {
   static create(parameters: StartParameters, scrappedData: ScrapResult<unknown>): OutputManager {
-    const { output, outputPath } = parameters;
-    switch (output) {
+    const { type, outputPath = '' } = parameters.output;
+    switch (type) {
       case OutputTypes.FILE:
         return new FileOutputManager(scrappedData, outputPath);
       case OutputTypes.HTTP:
@@ -17,7 +17,7 @@ export class OutputManagerFactory {
       case OutputTypes.PROCESS:
         return new ProcessOutputManager(scrappedData, outputPath);
       default:
-        throw new Error(`No output manager for provided type: ${output}`);
+        throw new Error(`No output manager for provided type: ${type}`);
     }
   }
 }

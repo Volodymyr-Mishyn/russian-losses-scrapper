@@ -1,7 +1,8 @@
+import { children } from 'cheerio/lib/api/traversing';
 import { Page } from 'puppeteer';
 import { delay } from 'src/_helpers/delay';
 import { SourceTypes } from 'src/models/scrap-parameters';
-import { OryxPageScrapper } from 'src/scrappers/oryx-page-scrapper';
+import { UkrainianLossesOryxPageScrapper } from 'src/scrappers/ukrainian-losses-oryx-page-scrapper';
 
 class MockPage {
   async $$() {
@@ -26,7 +27,7 @@ class MockPage {
   }
 }
 
-describe('OryxPageScrapper', () => {
+describe('UkrainianLossesOryxPageScrapper', () => {
   let page: MockPage;
   const source = SourceTypes.ORYX;
   beforeEach(() => {
@@ -35,15 +36,24 @@ describe('OryxPageScrapper', () => {
   describe('scrapPage', () => {
     describe('when valid page data', () => {
       const containerLastChild = {
+        tagName: 'DIV',
         children: [
           { tagName: 'H3', textContent: 'Test title!' },
-          { tagName: 'P' },
+          { tagName: 'DIV' },
           { tagName: 'H3', textContent: 'Entity title' },
           { tagName: 'UL', children: [{ innerHTML: 'One test' }, { innerHTML: 'Two test' }] },
+          { tagName: 'H3' },
+          {
+            tagName: 'DIV',
+            children: [
+              { tagName: 'H3', textContent: 'Inner Entity title' },
+              { tagName: 'UL', children: [{ innerHTML: 'Inner One test' }, { innerHTML: 'Inner Two test' }] },
+            ],
+          },
         ],
       };
       const container = {
-        children: [null, containerLastChild],
+        children: [null, { tagName: 'DIV', children: [containerLastChild] }],
       };
       beforeEach(() => {
         jest.spyOn(page, '$$eval').mockImplementation(async (selector, pageFunction) => {
@@ -53,17 +63,20 @@ describe('OryxPageScrapper', () => {
         });
       });
       it('should scrap data from page', async () => {
-        const scrapper = new OryxPageScrapper(page as unknown as Page, source);
+        const scrapper = new UkrainianLossesOryxPageScrapper(page as unknown as Page, source);
         const result = await scrapper.scrapPage();
         expect(result?.result).toEqual({
-          entities: [{ list: ['One test', 'Two test'], summary: 'Entity title' }],
+          entities: [
+            { list: ['One test', 'Two test'], summary: 'Entity title' },
+            { list: ['Inner One test', 'Inner Two test'], summary: 'Inner Entity title' },
+          ],
           title: 'Test title!',
         });
       });
     });
     describe('when invalid page data', () => {
       it('should return null', async () => {
-        const scrapper = new OryxPageScrapper(page as unknown as Page, source);
+        const scrapper = new UkrainianLossesOryxPageScrapper(page as unknown as Page, source);
         const result = await scrapper.scrapPage();
         expect(result?.result).toBeNull();
       });

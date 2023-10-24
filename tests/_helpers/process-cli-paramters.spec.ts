@@ -13,11 +13,15 @@ describe('processCLIParameters', () => {
     };
     const result = processCLIParameters(cliParameters);
     const expected: StartParameters = {
-      source: SourceTypes.MOD,
-      full: true,
+      source: {
+        type: SourceTypes.MOD,
+        full: true,
+      },
+      output: {
+        type: OutputTypes.PROCESS,
+        outputPath: 'output',
+      },
       headless: true,
-      output: OutputTypes.PROCESS,
-      outputPath: 'output',
     };
     expect(result).toEqual(expected);
   });
@@ -30,11 +34,15 @@ describe('processCLIParameters', () => {
     };
     const result = processCLIParameters(cliParameters);
     const expected: StartParameters = {
-      source: SourceTypes.ORYX,
-      full: false,
+      source: {
+        type: SourceTypes.ORYX,
+        full: false,
+      },
+      output: {
+        type: OutputTypes.PROCESS,
+        outputPath: 'output',
+      },
       headless: true,
-      output: OutputTypes.PROCESS,
-      outputPath: 'output',
     };
     expect(result).toEqual(expected);
   });
@@ -64,11 +72,15 @@ describe('processCLIParameters', () => {
     };
     const result = processCLIParameters(cliParameters as unknown as Record<string, string | boolean>);
     const expected: StartParameters = {
-      source: SourceTypes.ORYX,
-      full: true,
+      source: {
+        type: SourceTypes.ORYX,
+        full: true,
+      },
+      output: {
+        type: OutputTypes.PROCESS,
+        outputPath: 'output',
+      },
       headless: false,
-      output: OutputTypes.PROCESS,
-      outputPath: 'output',
     };
     expect(result).toEqual(expected);
   });
