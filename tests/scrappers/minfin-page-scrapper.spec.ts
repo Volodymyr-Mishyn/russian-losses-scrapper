@@ -92,7 +92,7 @@ describe('MinfinPageScrapper', () => {
     });
     describe('when scrapping errors out', () => {
       it('should handle error and wrap it in object', async () => {
-        const consoleWarnMock = jest.spyOn(console, 'log').mockImplementation();
+        const consoleLogMock = jest.spyOn(console, 'log').mockImplementation();
         jest.spyOn(page, 'waitForSelector').mockRejectedValue(new Error('An error occurred'));
         const scrapper = new MinfinPageScrapper(page as unknown as Page, source, true);
         const result = await scrapper.scrapPage();
@@ -103,7 +103,7 @@ describe('MinfinPageScrapper', () => {
           status: false,
           type: 'mod',
         });
-        consoleWarnMock.mockRestore();
+        consoleLogMock.mockRestore();
       });
     });
   });
