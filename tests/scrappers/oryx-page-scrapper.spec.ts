@@ -1,6 +1,6 @@
 import { Page } from 'puppeteer';
 import { delay } from 'src/_helpers/delay';
-import { SourceType } from 'src/models/scrap-parameters';
+import { SourceTypes } from 'src/models/scrap-parameters';
 import { OryxPageScrapper } from 'src/scrappers/oryx-page-scrapper';
 
 class MockPage {
@@ -28,7 +28,7 @@ class MockPage {
 
 describe('OryxPageScrapper', () => {
   let page: MockPage;
-  const source = SourceType.ORYX;
+  const source = SourceTypes.ORYX;
   beforeEach(() => {
     page = new MockPage();
   });

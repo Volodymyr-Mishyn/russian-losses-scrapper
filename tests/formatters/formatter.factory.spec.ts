@@ -2,7 +2,7 @@ import { DefaultFormatter } from 'src/formatters/default-formatter';
 import { FormatterFactory } from 'src/formatters/formatter.factory';
 import { MODFormatter } from 'src/formatters/mod-formatter';
 import { OryxFormatter } from 'src/formatters/oryx-formatter';
-import { SourceType } from 'src/models/scrap-parameters';
+import { SourceTypes } from 'src/models/scrap-parameters';
 import { MODScrapResult } from 'src/models/scrap-results/mod-scrap-result';
 import { OryxScrapResult } from 'src/models/scrap-results/oryx-scrap-result';
 import { ScrapResult } from 'src/models/scrap-results/scrap-result';
@@ -12,7 +12,7 @@ describe('FormatterFactory', () => {
     const scrappedData: ScrapResult<MODScrapResult> = {
       status: true,
       result: {} as MODScrapResult,
-      type: SourceType.MOD,
+      type: SourceTypes.MOD,
       date: '',
     };
     const formatter = FormatterFactory.create(scrappedData);
@@ -23,7 +23,7 @@ describe('FormatterFactory', () => {
     const scrappedData: ScrapResult<OryxScrapResult> = {
       status: true,
       result: {} as OryxScrapResult,
-      type: SourceType.ORYX,
+      type: SourceTypes.ORYX,
       date: '',
     };
     const formatter = FormatterFactory.create(scrappedData);
@@ -34,7 +34,7 @@ describe('FormatterFactory', () => {
     const scrappedData: ScrapResult<unknown> = {
       status: true,
       result: {},
-      type: 'UnknownSourceType' as SourceType,
+      type: 'UnknownSourceType' as SourceTypes,
       date: '',
     };
     const formatter = FormatterFactory.create(scrappedData);

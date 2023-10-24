@@ -1,6 +1,6 @@
 import { Page } from 'puppeteer';
 import { delay } from 'src/_helpers/delay';
-import { SourceType } from 'src/models/scrap-parameters';
+import { SourceTypes } from 'src/models/scrap-parameters';
 import { MinfinPageScrapper } from 'src/scrappers/minfin-page-scrapper';
 
 class MockPage {
@@ -28,7 +28,7 @@ class MockPage {
 
 describe('MinfinPageScrapper', () => {
   let page: MockPage;
-  const source = SourceType.MOD;
+  const source = SourceTypes.MOD;
   beforeEach(() => {
     page = new MockPage();
   });
