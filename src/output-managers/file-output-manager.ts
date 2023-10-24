@@ -17,7 +17,7 @@ export class FileOutputManager extends OutputManager {
     });
   }
   protected async formatData(): Promise<unknown> {
-    return this.formatter.formatPretty();
+    return this.formatter.formatAsIs();
   }
   protected async innerSend(output: Output): Promise<void> {
     await this._saveOutputIntoFile(output);

@@ -20,7 +20,8 @@
     "start:mod:process:full": "ts-node ./src/index.ts --source=mod --full --output=process --outputPath=out",
     "start:oryx:file": "ts-node ./src/index.ts --source=oryx --output=file --outputPath=oryx.txt",
     "start:oryx:http": "ts-node ./src/index.ts --source=oryx --output=http --outputPath=someurl.com",
-    "start:oryx:process": "ts-node ./src/index.ts --source=oryx --output=process --outputPath=out"
+    "start:oryx:process": "ts-node ./src/index.ts --source=oryx --output=process --outputPath=out",
+    "start:oryx:file:nh": "ts-node ./src/index.ts --source=oryx --output=file --outputPath=oryx.txt --notHeadless"
   },
   "author": "Volodymyr Mishyn",
   "license": "ISC",
