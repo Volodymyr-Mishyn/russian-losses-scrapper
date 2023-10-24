@@ -13,7 +13,7 @@ export class PageScrapperFactory {
       case SourceTypes.ORYX:
         return new OryxPageScrapper(page, source);
       default:
-        throw new Error('Invalid scrapper type');
+        throw new Error(`No scrapper for provided type: ${source}`);
     }
   }
 }

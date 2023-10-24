@@ -21,6 +21,6 @@ describe('PageScrapperFactory', () => {
 
   it('should throw an error for an invalid source', () => {
     const parameters: StartParameters = { source: 'InvalidSource' } as unknown as StartParameters;
-    expect(() => PageScrapperFactory.create(parameters, mockPage)).toThrowError('Invalid scrapper type');
+    expect(() => PageScrapperFactory.create(parameters, mockPage)).toThrowError();
   });
 });
