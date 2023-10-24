@@ -33,21 +33,21 @@ describe('MinfinPageScrapper', () => {
     page = new MockPage();
   });
   describe('scrapPage', () => {
-    describe('when scrapping succeeds', () => {
-      const realDate = Date;
-      const mockDate = new Date('2023-01-01T12:00:00Z');
-      beforeEach(() => {
-        global.Date = class extends realDate {
-          constructor() {
-            super();
-            return mockDate;
-          }
-        } as any;
-      });
+    const realDate = Date;
+    const mockDate = new Date('2023-01-01T12:00:00Z');
+    beforeEach(() => {
+      global.Date = class extends realDate {
+        constructor() {
+          super();
+          return mockDate;
+        }
+      } as any;
+    });
 
-      afterEach(() => {
-        global.Date = realDate;
-      });
+    afterEach(() => {
+      global.Date = realDate;
+    });
+    describe('when scrapping succeeds', () => {
       it('should return date and type of scrapping', async () => {
         const scrapper = new MinfinPageScrapper(page as unknown as Page, source, true);
         const result = await scrapper.scrapPage();
@@ -91,13 +91,18 @@ describe('MinfinPageScrapper', () => {
       });
     });
     describe('when scrapping errors out', () => {
-      it('should handle error, log it and return null', async () => {
+      it('should handle error and wrap it in object', async () => {
         const consoleWarnMock = jest.spyOn(console, 'log').mockImplementation();
         jest.spyOn(page, 'waitForSelector').mockRejectedValue(new Error('An error occurred'));
         const scrapper = new MinfinPageScrapper(page as unknown as Page, source, true);
         const result = await scrapper.scrapPage();
         expect(console.log).toHaveBeenCalledWith(expect.any(String), 'An error occurred');
-        expect(result).toBeNull();
+        expect(result).toEqual({
+          date: '2023-01-01T12:00:00.000Z',
+          error: 'An error occurred',
+          status: false,
+          type: 'mod',
+        });
         consoleWarnMock.mockRestore();
       });
     });

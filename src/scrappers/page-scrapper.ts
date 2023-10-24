@@ -10,7 +10,7 @@ export abstract class PageScrapper<T> {
   }
   protected abstract innerScrap(): Promise<T>;
 
-  public async scrapPage(): Promise<ScrapResult<T> | null> {
+  public async scrapPage(): Promise<ScrapResult<T>> {
     try {
       await this.page.goto(this.baseUrl);
       const result = await this.innerScrap();
@@ -18,11 +18,14 @@ export abstract class PageScrapper<T> {
       return {
         date,
         type: this._type,
+        status: true,
         result,
       };
     } catch (error) {
-      console.log('Error while scrapping:', (error as any).message);
-      return null;
+      const errorMessage = (error as any).message;
+      console.log('Error while scrapping:', errorMessage);
+      const date = new Date().toISOString();
+      return { date, type: this._type, status: false, error: errorMessage };
     }
   }
 }

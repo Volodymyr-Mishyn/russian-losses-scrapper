@@ -10,6 +10,7 @@ import { ScrapResult } from 'src/models/scrap-results/scrap-result';
 describe('FormatterFactory', () => {
   it('should create a MODFormatter for MOD source type', () => {
     const scrappedData: ScrapResult<MODScrapResult> = {
+      status: true,
       result: {} as MODScrapResult,
       type: SourceType.MOD,
       date: '',
@@ -20,6 +21,7 @@ describe('FormatterFactory', () => {
 
   it('should create an OryxFormatter for ORYX source type', () => {
     const scrappedData: ScrapResult<OryxScrapResult> = {
+      status: true,
       result: {} as OryxScrapResult,
       type: SourceType.ORYX,
       date: '',
@@ -30,6 +32,7 @@ describe('FormatterFactory', () => {
 
   it('should create a DefaultFormatter for an unknown source type', () => {
     const scrappedData: ScrapResult<unknown> = {
+      status: true,
       result: {},
       type: 'UnknownSourceType' as SourceType,
       date: '',
