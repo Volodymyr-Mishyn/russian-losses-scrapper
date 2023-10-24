@@ -13,8 +13,8 @@ export abstract class PageScrapper<T> {
   public async scrapPage(): Promise<ScrapResult<T> | null> {
     try {
       await this.page.goto(this.baseUrl);
-      const date = new Date().toISOString();
       const result = await this.innerScrap();
+      const date = new Date().toISOString();
       return {
         date,
         type: this._type,
