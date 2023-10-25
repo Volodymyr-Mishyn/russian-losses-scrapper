@@ -24,7 +24,7 @@ async function formatData(scrappedData: ScrapResult<unknown>) {
 }
 
 async function outputData(parameters: StartParameters, scrappedData: ScrapResult<unknown>) {
-  if (parameters.output === OutputTypes.NONE) {
+  if (parameters.output.type === OutputTypes.NONE) {
     const result = await formatData(scrappedData);
     if (result) {
       console.log(result);

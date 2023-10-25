@@ -6,10 +6,21 @@ export enum SourceTypes {
 }
 export type Source = SourceTypes.MOD | SourceTypes.ORYX;
 
+export enum OryxTypes {
+  RUSSIA = 'Russia',
+  UKRAINE = 'Ukraine',
+}
+export type OryxType = OryxTypes.RUSSIA | OryxTypes.UKRAINE;
+
 export interface StartParameters {
-  source: Source;
-  output: OutputType;
-  outputPath: string;
-  full?: boolean;
+  source: {
+    type: Source;
+    full?: boolean;
+    subType?: OryxTypes;
+  };
+  output: {
+    type: OutputType;
+    outputPath?: string;
+  };
   headless?: boolean;
 }

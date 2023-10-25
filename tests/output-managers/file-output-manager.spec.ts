@@ -9,7 +9,7 @@ jest.mock('fs');
 
 describe('FileOutputManager', () => {
   const mockFormatter = {
-    formatPretty: () => Promise.resolve('{}'),
+    formatAsIs: () => Promise.resolve({}),
   } as unknown as Formatter<unknown, unknown>;
 
   beforeEach(() => {
@@ -28,7 +28,7 @@ describe('FileOutputManager', () => {
       const expectedOutput = JSON.stringify(
         {
           success: true,
-          result: { date: mockedScrappedData.date, type: mockedScrappedData.type, data: '{}' },
+          result: { date: mockedScrappedData.date, type: mockedScrappedData.type, data: {} },
         },
         null,
         2,
@@ -44,9 +44,9 @@ describe('FileOutputManager', () => {
         mockWriteFile.mockImplementation((path: any, data: any, callback: any) => {
           callback(null);
         });
-        jest.spyOn(mockFormatter, 'formatPretty');
+        jest.spyOn(mockFormatter, 'formatAsIs');
         await fileOutputManager.output();
-        expect(mockFormatter.formatPretty).toHaveBeenCalled();
+        expect(mockFormatter.formatAsIs).toHaveBeenCalled();
         expect(mockWriteFile).toHaveBeenCalledWith(outputPath, expectedOutput, expect.any(Function));
       });
 
@@ -87,11 +87,11 @@ describe('FileOutputManager', () => {
         mockWriteFile.mockImplementation((path: any, data: any, callback: any) => {
           callback(null);
         });
-        jest.spyOn(mockFormatter, 'formatPretty').mockImplementation(() => {
+        jest.spyOn(mockFormatter, 'formatAsIs').mockImplementation(() => {
           throw new Error('formatting Error');
         });
         await fileOutputManager.output();
-        expect(mockFormatter.formatPretty).toHaveBeenCalled();
+        expect(mockFormatter.formatAsIs).toHaveBeenCalled();
         expect(mockWriteFile).toHaveBeenCalledWith(outputPath, expectedOutput, expect.any(Function));
       });
     });
@@ -122,9 +122,9 @@ describe('FileOutputManager', () => {
         mockWriteFile.mockImplementation((path: any, data: any, callback: any) => {
           callback(null);
         });
-        jest.spyOn(mockFormatter, 'formatPretty');
+        jest.spyOn(mockFormatter, 'formatAsIs');
         await fileOutputManager.output();
-        expect(mockFormatter.formatPretty).not.toHaveBeenCalled();
+        expect(mockFormatter.formatAsIs).not.toHaveBeenCalled();
         expect(mockWriteFile).toHaveBeenCalledWith(outputPath, expectedOutput, expect.any(Function));
       });
     });

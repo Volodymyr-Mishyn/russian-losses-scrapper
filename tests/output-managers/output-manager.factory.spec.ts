@@ -16,8 +16,10 @@ describe('OutputManagerFactory', () => {
 
     it('should create a FileOutputManager when output type is "FILE"', () => {
       const parameters: StartParameters = {
-        output: OutputTypes.FILE,
-        outputPath: 'output/file.txt',
+        output: {
+          type: OutputTypes.FILE,
+          outputPath: 'output/file.txt',
+        },
       } as unknown as StartParameters;
       const outputManager = OutputManagerFactory.create(parameters, scrappedData);
       expect(outputManager).toBeInstanceOf(FileOutputManager);
@@ -25,8 +27,10 @@ describe('OutputManagerFactory', () => {
 
     it('should create an HTTPOutputManager when output type is "HTTP"', () => {
       const parameters: StartParameters = {
-        output: OutputTypes.HTTP,
-        outputPath: 'http://example.com',
+        output: {
+          type: OutputTypes.HTTP,
+          outputPath: 'http://example.com',
+        },
       } as unknown as StartParameters;
       const outputManager = OutputManagerFactory.create(parameters, scrappedData);
       expect(outputManager).toBeInstanceOf(HTTPOutputManager);
@@ -34,8 +38,10 @@ describe('OutputManagerFactory', () => {
 
     it('should create a ProcessOutputManager when output type is "PROCESS"', () => {
       const parameters: StartParameters = {
-        output: OutputTypes.PROCESS,
-        outputPath: 'node process-script.js',
+        output: {
+          type: OutputTypes.PROCESS,
+          outputPath: 'node process-script.js',
+        },
       } as unknown as StartParameters;
       const outputManager = OutputManagerFactory.create(parameters, scrappedData);
       expect(outputManager).toBeInstanceOf(ProcessOutputManager);
@@ -43,8 +49,10 @@ describe('OutputManagerFactory', () => {
 
     it('should throw an error when an unsupported output type is provided', () => {
       const parameters: StartParameters = {
-        output: 'UNSUPPORTED_TYPE',
-        outputPath: 'invalid',
+        output: {
+          type: 'UNSUPPORTED_TYPE',
+          outputPath: 'invalid',
+        },
       } as unknown as StartParameters;
       expect(() => OutputManagerFactory.create(parameters, scrappedData)).toThrowError(
         'No output manager for provided type: UNSUPPORTED_TYPE',
