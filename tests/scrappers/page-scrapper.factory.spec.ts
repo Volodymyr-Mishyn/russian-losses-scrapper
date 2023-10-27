@@ -1,7 +1,6 @@
 import { Page } from 'puppeteer';
 import { OryxTypes, SourceTypes, StartParameters } from 'src/models/scrap-parameters';
 import { MinfinPageScrapper } from 'src/scrappers/minfin-page-scrapper';
-import { OryxPageScrapper } from 'src/scrappers/oryx-page-scrapper';
 import { PageScrapperFactory } from 'src/scrappers/page-scrapper.factory';
 import { RussianLossesOryxPageScrapper } from 'src/scrappers/russian-losses-oryx-page-scrapper';
 import { UkrainianLossesOryxPageScrapper } from 'src/scrappers/ukrainian-losses-oryx-page-scrapper';

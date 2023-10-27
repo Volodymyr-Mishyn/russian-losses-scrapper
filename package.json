@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "npx jest",
-    "build": "tsc",
+    "build:dev": "tsc",
+    "build:prod": "tsc -p tsconfig.prod.json",
     "format": "npx prettier --write 'src/**/*.ts'",
     "dev:mod:nh": "ts-node ./src/index.ts --source=mod --notHeadless",
     "dev:oryx:russia": "ts-node ./src/index.ts --source=oryx --oryxType=Russia --notHeadless",
