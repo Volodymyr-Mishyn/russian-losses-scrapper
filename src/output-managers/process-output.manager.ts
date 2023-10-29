@@ -13,7 +13,8 @@ export class ProcessOutputManager extends OutputManager {
         process.send(resultObject);
         return;
       } else {
-        process.stdout.write(JSON.stringify(resultObject));
+        process.stdout.write(JSON.stringify(resultObject), 'utf8');
+        process.stdout.end();
       }
     } catch (error: any) {
       throw new Error('error while sending process message: ' + error.message);

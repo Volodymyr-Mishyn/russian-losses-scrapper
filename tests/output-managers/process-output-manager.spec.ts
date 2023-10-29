@@ -34,8 +34,9 @@ describe('ProcessOutputManager', () => {
     let mockProcessOut: any;
     beforeEach(() => {
       processOutputManager = new ProcessOutputManager(mockedScrappedData, outputPath);
-      mockProcessSend = jest.spyOn(process, 'send');
-      mockProcessOut = jest.spyOn(process.stdout, 'write');
+      mockProcessSend = jest.spyOn(process, 'send').mockImplementation(() => true);
+      mockProcessOut = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+      jest.spyOn(process.stdout, 'end').mockImplementation();
     });
     describe('when data scrapped successfully', () => {
       const expectedOutput = {
@@ -63,7 +64,7 @@ describe('ProcessOutputManager', () => {
         it('should format data and send output via process.stdout.write', async () => {
           await processOutputManager.output();
           expect(mockFormatter.formatAsIs).toHaveBeenCalled();
-          expect(mockProcessOut).toHaveBeenCalledWith(JSON.stringify({ [outputPath]: expectedOutput }));
+          expect(mockProcessOut).toHaveBeenCalledWith(JSON.stringify({ [outputPath]: expectedOutput }), 'utf8');
         });
       });
     });
