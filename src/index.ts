@@ -11,7 +11,7 @@ import { OutputManagerFactory } from './output-managers/output-manager.factory';
 
 const cliArgs = minimist(process.argv.slice(2));
 const startParameters: StartParameters = processCLIParameters(cliArgs);
-console.log(startParameters);
+// console.log(JSON.stringify(startParameters));
 
 async function scrapeData(parameters: StartParameters, page: Page) {
   const scrapper = PageScrapperFactory.create(parameters, page);

@@ -3,9 +3,20 @@ import { MODDayFormatResult, MODEntityLoss, MODFormatResult } from '../models/fo
 import { MODDayScrapResult, MODScrapResult } from '../models/scrap-results/mod-scrap-result';
 import { Formatter } from './formatter';
 
+const EXCESSIVE_WORDS = ['aprx.', 'people'];
 export class MODFormatter extends Formatter<MODScrapResult, MODFormatResult> {
+  private _formatString(inputString: string): string {
+    let cleanedString = inputString;
+    EXCESSIVE_WORDS.forEach((word) => {
+      cleanedString = cleanedString.replaceAll(word, '');
+    });
+    cleanedString = cleanedString.replace(/\s{2,}/g, ' ');
+    return cleanedString.trim();
+  }
+
   private _processSingleCasualty(casualty: string): MODEntityLoss | null {
-    const match = casualty.match(/^(.*?)\s*—\s*(\d+)\s*(\(\+(\d+)\))?/);
+    const cleanedString = this._formatString(casualty);
+    const match = cleanedString.match(/^(.*?)\s*—\s*(\d+)\s*(\(\+(\d+)\))?/);
     if (!match) {
       return null;
     }
