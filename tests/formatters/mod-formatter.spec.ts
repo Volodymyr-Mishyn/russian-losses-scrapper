@@ -10,7 +10,7 @@ describe('MODFormatter', () => {
     },
     {
       date: '02.01.2023',
-      casualties: ['Personnel — 300000 (+1000)', 'Helicopters — 200 (+2)'],
+      casualties: ['Personnel — aprx. 300000  people (+1000)', 'Helicopters — 200 (+2)'],
     },
   ];
   const expectedFormattedData = [
