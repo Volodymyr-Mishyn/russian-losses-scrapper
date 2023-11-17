@@ -16,7 +16,7 @@ export class MODFormatter extends Formatter<MODScrapResult, MODFormatResult> {
 
   private _processSingleCasualty(casualty: string): MODEntityLoss | null {
     const cleanedString = this._formatString(casualty);
-    const match = cleanedString.match(/^(.*?)\s*—\s*(\d+)\s*(\(\+(\d+)\))?/);
+    const match = cleanedString.match(/^(.*?)\s*—\s*(\d+)\s*(\(([+-]?\d+)\))?/);
     if (!match) {
       return null;
     }
