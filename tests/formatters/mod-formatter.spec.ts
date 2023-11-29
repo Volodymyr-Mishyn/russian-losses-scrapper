@@ -6,7 +6,7 @@ describe('MODFormatter', () => {
   const scrappedData: MODScrapResult = [
     {
       date: '01.01.2023',
-      casualties: ['Tanks — 5000 (+10)', 'Planes — 200 (+3)'],
+      casualties: ['Tanks — 5000 (+10)', 'Planes — 200 (+3)', 'MLRS — 100 (-2)'],
     },
     {
       date: '02.01.2023',
@@ -19,6 +19,7 @@ describe('MODFormatter', () => {
       casualties: [
         { name: 'Tanks', total: 5000, increment: 10 },
         { name: 'Planes', total: 200, increment: 3 },
+        { name: 'MLRS', total: 100, increment: -2 },
       ],
     },
     {
