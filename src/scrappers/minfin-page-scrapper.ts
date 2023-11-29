@@ -1,4 +1,4 @@
-import { ElementHandle, Page } from 'puppeteer';
+import { Page } from 'puppeteer';
 import { PageScrapper } from './page-scrapper';
 import { delay } from '../_helpers/delay';
 import { MODDayScrapResult, MODScrapResult } from '../models/scrap-results/mod-scrap-result';
