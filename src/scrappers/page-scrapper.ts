@@ -12,7 +12,11 @@ export abstract class PageScrapper<T> {
 
   public async scrapPage(): Promise<ScrapResult<T>> {
     try {
-      await this.page.goto(this.baseUrl);
+      // this.page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
+      await this.page.goto(this.baseUrl, {
+        waitUntil: 'networkidle2',
+        timeout: 60000,
+      });
       const result = await this.innerScrap();
       const date = new Date().toISOString();
       return {
