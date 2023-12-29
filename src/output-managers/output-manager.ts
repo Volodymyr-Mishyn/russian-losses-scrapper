@@ -1,3 +1,4 @@
+import { Logger } from '../_helpers/logger';
 import { Formatter } from '../formatters/formatter';
 import { FormatterFactory } from '../formatters/formatter.factory';
 import { Output } from '../models/outputs/output';
@@ -5,7 +6,10 @@ import { ScrapResult } from '../models/scrap-results/scrap-result';
 
 export abstract class OutputManager {
   protected formatter!: Formatter<unknown, unknown>;
-  constructor(protected scrappedData: ScrapResult<unknown>, protected outputPath: string) {
+  constructor(
+    protected scrappedData: ScrapResult<unknown>,
+    protected outputPath: string,
+  ) {
     this.formatter = FormatterFactory.create(scrappedData);
   }
 
@@ -48,6 +52,8 @@ export abstract class OutputManager {
   }
 
   public async output(): Promise<void> {
+    Logger.getInstance().info('outputting data to ' + this.outputPath);
     await this.processOutput();
+    Logger.getInstance().info('output complete');
   }
 }

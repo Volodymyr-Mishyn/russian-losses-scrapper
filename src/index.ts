@@ -8,10 +8,11 @@ import { PageScrapperFactory } from './scrappers/page-scrapper.factory';
 import { ScrapResult } from './models/scrap-results/scrap-result';
 import { OutputTypes } from './models/output-parameters';
 import { OutputManagerFactory } from './output-managers/output-manager.factory';
+import { Logger } from './_helpers/logger';
 
 const cliArgs = minimist(process.argv.slice(2));
 const startParameters: StartParameters = processCLIParameters(cliArgs);
-// console.log(JSON.stringify(startParameters));
+Logger.getInstance().info(`scape app started with parameters: ${cliArgs.source} ${cliArgs.oryxType || ''}`);
 
 async function scrapeData(parameters: StartParameters, page: Page) {
   const scrapper = PageScrapperFactory.create(parameters, page);
@@ -24,6 +25,7 @@ async function formatData(scrappedData: ScrapResult<unknown>) {
 }
 
 async function outputData(parameters: StartParameters, scrappedData: ScrapResult<unknown>) {
+  Logger.getInstance().info('outputting data');
   if (parameters.output.type === OutputTypes.NONE) {
     const result = await formatData(scrappedData);
     if (result) {
@@ -36,7 +38,9 @@ async function outputData(parameters: StartParameters, scrappedData: ScrapResult
 }
 
 async function main(browser: Browser) {
+  Logger.getInstance().info('attempting to open new page');
   const page = await browser.newPage();
+  Logger.getInstance().info('page opened');
   const scrappedData = await scrapeData(startParameters, page);
   await outputData(startParameters, scrappedData);
 }

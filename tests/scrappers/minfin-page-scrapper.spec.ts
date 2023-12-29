@@ -24,6 +24,10 @@ class MockPage {
   async goto() {
     await delay(0);
   }
+
+  on(event: any) {
+    return;
+  }
 }
 
 describe('MinfinPageScrapper', () => {
