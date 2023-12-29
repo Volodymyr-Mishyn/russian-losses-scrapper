@@ -26,7 +26,6 @@ export class Logger implements LoggerInterface {
   }
 
   public static getInstance(): Logger {
-    console.log('Logger.getInstance() called');
     if (!Logger._instance) {
       Logger._instance = new Logger();
     }
