@@ -12,6 +12,8 @@ export async function startBrowser(headless: boolean = true): Promise<Browser | 
       ignoreHTTPSErrors: true,
       dumpio: false,
     });
+    console.log('Opening the browse successful');
+    Logger.getInstance().info('Opening the browser successful');
     return browser;
   } catch (err) {
     console.log('Could not create a browser instance => : ', err);
