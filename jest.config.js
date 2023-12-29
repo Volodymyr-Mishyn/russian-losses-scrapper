@@ -10,4 +10,6 @@ module.exports = {
     '^src/(.*)$': '<rootDir>/src/$1',
   },
   testPathIgnorePatterns: ['/node_modules/', 'tests/browser.spec.ts'],
+  automock: false,
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 };
