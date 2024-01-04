@@ -10,7 +10,7 @@ export class Logger implements LoggerInterface {
   private _logger: winston.Logger | null = null;
 
   private constructor() {
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV === 'development') {
       this._logger = winston.createLogger({
         level: 'info',
         format: winston.format.json(),
