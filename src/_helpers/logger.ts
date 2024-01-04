@@ -7,16 +7,16 @@ const logFileName = `LOG_${cliArgs.source} ${cliArgs.oryxType || ''} ${new Date(
 export class Logger implements LoggerInterface {
   private static _instance: Logger | null = null;
 
-  private _logger: winston.Logger;
+  private _logger: winston.Logger | null = null;
 
   private constructor() {
-    this._logger = winston.createLogger({
-      level: 'info',
-      format: winston.format.json(),
-      transports: [new winston.transports.File({ filename: './debug/' + logFileName + '.log' })],
-    });
+    if (process.env.NODE_ENV === 'development') {
+      this._logger = winston.createLogger({
+        level: 'info',
+        format: winston.format.json(),
+        transports: [new winston.transports.File({ filename: './debug/' + logFileName + '.log' })],
+      });
 
-    if (process.env.NODE_ENV !== 'production') {
       this._logger.add(
         new winston.transports.Console({
           format: winston.format.simple(),
@@ -33,14 +33,26 @@ export class Logger implements LoggerInterface {
   }
 
   public info(message: string) {
+    if (this._logger === null) {
+      console.log(message);
+      return;
+    }
     this._logger.info(message);
   }
 
   public error(message: string) {
+    if (this._logger === null) {
+      console.error(message);
+      return;
+    }
     this._logger.error(message);
   }
 
   public debug(message: string) {
+    if (this._logger === null) {
+      console.debug(message);
+      return;
+    }
     this._logger.debug(message);
   }
 }
