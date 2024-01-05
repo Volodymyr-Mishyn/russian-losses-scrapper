@@ -33,6 +33,10 @@ export class Logger implements LoggerInterface {
   }
 
   public info(message: string) {
+    if (process.env.NODE_ENV === 'development') {
+      console.info(message);
+      return;
+    }
     if (this._logger === null) {
       return;
     }
@@ -48,6 +52,10 @@ export class Logger implements LoggerInterface {
   }
 
   public debug(message: string) {
+    if (process.env.NODE_ENV === 'development') {
+      console.debug(message);
+      return;
+    }
     if (this._logger === null) {
       return;
     }
