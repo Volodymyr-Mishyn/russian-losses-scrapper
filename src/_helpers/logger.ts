@@ -34,7 +34,6 @@ export class Logger implements LoggerInterface {
 
   public info(message: string) {
     if (this._logger === null) {
-      console.log(message);
       return;
     }
     this._logger.info(message);
@@ -50,7 +49,6 @@ export class Logger implements LoggerInterface {
 
   public debug(message: string) {
     if (this._logger === null) {
-      console.debug(message);
       return;
     }
     this._logger.debug(message);
