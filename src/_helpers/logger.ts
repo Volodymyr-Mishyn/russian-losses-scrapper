@@ -21,13 +21,12 @@ export class Logger implements LoggerInterface {
         format: winston.format.json(),
         transports: [new winston.transports.File({ filename: filePath })],
       });
-      if (process.env.NODE_ENV === 'development') {
-        this._logger.add(
-          new winston.transports.Console({
-            format: winston.format.simple(),
-          }),
-        );
-      }
+      /*De-comment this to see logs in console for debug*/
+      // this._logger.add(
+      //   new winston.transports.Console({
+      //     format: winston.format.simple(),
+      //   }),
+      // );
     } catch (error) {
       console.log('error creating logger');
       console.log(error);
