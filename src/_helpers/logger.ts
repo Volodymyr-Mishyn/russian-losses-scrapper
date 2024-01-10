@@ -1,27 +1,36 @@
 import { LoggerInterface } from '../models/logger.interface';
 import * as winston from 'winston';
 const minimist = require('minimist');
+const path = require('path');
 
+const directory = __dirname;
+const fullPath = path.join(directory, '../../debug/');
 const cliArgs = minimist(process.argv.slice(2));
-const logFileName = `LOG_${cliArgs.source} ${cliArgs.oryxType || ''} ${new Date().toISOString()}`;
+const logFileName = `LOG_${cliArgs.source} ${cliArgs.oryxType || ''} ${new Date().toISOString()}.log`;
+const filePath = path.join(fullPath, logFileName);
+
 export class Logger implements LoggerInterface {
   private static _instance: Logger | null = null;
 
   private _logger: winston.Logger | null = null;
 
   private constructor() {
-    if (process.env.NODE_ENV === 'development') {
+    try {
       this._logger = winston.createLogger({
         level: 'info',
         format: winston.format.json(),
-        transports: [new winston.transports.File({ filename: './debug/' + logFileName + '.log' })],
+        transports: [new winston.transports.File({ filename: filePath })],
       });
-
-      this._logger.add(
-        new winston.transports.Console({
-          format: winston.format.simple(),
-        }),
-      );
+      if (process.env.NODE_ENV === 'development') {
+        this._logger.add(
+          new winston.transports.Console({
+            format: winston.format.simple(),
+          }),
+        );
+      }
+    } catch (error) {
+      console.log('error creating logger');
+      console.log(error);
     }
   }
 
@@ -33,10 +42,6 @@ export class Logger implements LoggerInterface {
   }
 
   public info(message: string) {
-    if (process.env.NODE_ENV === 'development') {
-      console.info(message);
-      return;
-    }
     if (this._logger === null) {
       return;
     }

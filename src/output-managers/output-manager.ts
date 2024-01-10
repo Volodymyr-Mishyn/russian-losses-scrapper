@@ -52,7 +52,7 @@ export abstract class OutputManager {
   }
 
   public async output(): Promise<void> {
-    Logger.getInstance().info('outputting data to ' + this.outputPath);
+    Logger.getInstance().info('outputting data');
     await this.processOutput();
     Logger.getInstance().info('output complete');
   }
