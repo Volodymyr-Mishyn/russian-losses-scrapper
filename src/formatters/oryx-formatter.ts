@@ -37,18 +37,25 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
   }
 
   private _processTitleStat(title: string): OryxStat {
-    const statsRegex = /(\d+)/g;
-    const statsMatches = title.match(statsRegex);
-    if (!statsMatches || statsMatches.length < 1) {
-      throw new Error('Statistics not found');
-    }
-    return {
-      count: this._processStringNumber(statsMatches[0]),
-      destroyed: this._processStringNumber(statsMatches[1]),
-      damaged: this._processStringNumber(statsMatches[2]),
-      abandoned: this._processStringNumber(statsMatches[3]),
-      captured: this._processStringNumber(statsMatches[4]),
+    const titleLower = title.toLowerCase();
+    const totalRegex = /(\d+), of which/;
+    const destroyedRegex = /destroyed:\s*(\d+)/;
+    const damagedRegex = /damaged:\s*(\d+)/;
+    const abandonedRegex = /abandoned:\s*(\d+)/;
+    const capturedRegex = /captured:\s*(\d+)/;
+
+    const findNumber = (pattern: RegExp): number => {
+      const match = titleLower.match(pattern);
+      return match ? this._processStringNumber(match[1]) : 0;
     };
+    const a = {
+      count: findNumber(totalRegex),
+      destroyed: findNumber(destroyedRegex),
+      damaged: findNumber(damagedRegex),
+      abandoned: findNumber(abandonedRegex),
+      captured: findNumber(capturedRegex),
+    };
+    return a;
   }
 
   private _processTitle(title: string): OryxStatRoot {

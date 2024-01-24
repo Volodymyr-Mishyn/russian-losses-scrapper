@@ -49,6 +49,7 @@ export class UkrainianLossesOryxPageScrapper extends OryxPageScrapper {
         entities: [],
       };
       traverseList(infoList, result);
+      // debugger;
       return result;
     });
   }
