@@ -17,6 +17,12 @@ const categoryToActual: Array<[string, keyof OryxDetailedEntityInfo]> = [
   ['abandoned', 'abandoned'],
   ['damaged and captured', 'damagedAndCaptured'],
   ['damaged and abandoned', 'damagedAndAbandoned'],
+  ['damaged and abanonded', 'damagedAndAbandoned'],
+  ['captured and destroyed', 'destroyed'],
+  ['abandoned and destroyed', 'destroyed'],
+  ['captured and later destroyed', 'destroyed'],
+  ['abandoned and later destroyed', 'destroyed'],
+  ['captured and stripped', 'captured'],
 ];
 const categoryMap = new Map<string, keyof OryxDetailedEntityInfo>(categoryToActual);
 export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> {
@@ -89,13 +95,9 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
     if (link) {
       oryxEntity[categoryKey].list.push(link);
     }
-    let numbers = splitString.join().match(/\d+/g);
+    let numbers = text.match(/\d+/g);
     if (numbers && numbers?.length > 0) {
-      const maxValue = numbers.at(-1) || '0';
-      const numberValue = this._processStringNumber(maxValue);
-      if (oryxEntity[categoryKey].count < numberValue) {
-        oryxEntity[categoryKey].count = numberValue;
-      }
+      oryxEntity[categoryKey].count = oryxEntity[categoryKey].count + numbers.length;
     }
   }
 

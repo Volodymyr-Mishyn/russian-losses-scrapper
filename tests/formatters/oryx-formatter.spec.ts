@@ -105,7 +105,7 @@ const resultData = {
             list: [],
           },
           damagedAndCaptured: {
-            count: 2,
+            count: 1,
             list: ['https://i.postimg.cc/05pQKcnw/1031-BMP-2-675-sb3-KDZ-dam-capt.jpg'],
           },
           damagedAndAbandoned: {
