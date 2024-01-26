@@ -350,6 +350,34 @@ const resultData = {
           },
         },
         {
+          name: 'R-845 radio station',
+          count: 1,
+          destroyed: {
+            count: 1,
+            list: ['https://i.postimg.cc/vm0vL7zP/2005-R-845-radio-station-destr-24-02-22.jpg'],
+          },
+          damaged: {
+            count: 0,
+            list: [],
+          },
+          captured: {
+            count: 0,
+            list: [],
+          },
+          abandoned: {
+            count: 0,
+            list: [],
+          },
+          damagedAndCaptured: {
+            count: 0,
+            list: [],
+          },
+          damagedAndAbandoned: {
+            count: 0,
+            list: [],
+          },
+        },
+        {
           name: 'ZiL-131-based KShM KUNG command vehicle',
           count: 1,
           destroyed: {
@@ -383,6 +411,62 @@ const resultData = {
           destroyed: {
             count: 1,
             list: ['https://twitter.com/UAWeapons/status/1552621037057187840'],
+          },
+          damaged: {
+            count: 0,
+            list: [],
+          },
+          captured: {
+            count: 0,
+            list: [],
+          },
+          abandoned: {
+            count: 0,
+            list: [],
+          },
+          damagedAndCaptured: {
+            count: 0,
+            list: [],
+          },
+          damagedAndAbandoned: {
+            count: 0,
+            list: [],
+          },
+        },
+        {
+          name: 'Control station for the TB2 UCAV',
+          count: 2,
+          destroyed: {
+            count: 2,
+            list: ['https://i.postimg.cc/SQVxQ1gY/2000-4x-tb2-ucav-and-2-ground-stations-destr-24-02-22.png'],
+          },
+          damaged: {
+            count: 0,
+            list: [],
+          },
+          captured: {
+            count: 0,
+            list: [],
+          },
+          abandoned: {
+            count: 0,
+            list: [],
+          },
+          damagedAndCaptured: {
+            count: 0,
+            list: [],
+          },
+          damagedAndAbandoned: {
+            count: 0,
+            list: [],
+          },
+        },
+        {
+          name: 'SkyGuard Aspide control station',
+          count: 1,
+          destroyed: {
+            count: 1,
+            list: ['https://twitter.com/UAWeapons/status/1683139938743644162'],
           },
           damaged: {
             count: 0,
@@ -460,6 +544,7 @@ describe('ORYXFormatter', () => {
   describe('formatPretty', () => {
     it('should format the scrapped data into string with indents', async () => {
       const formattedData = await formatter.formatPretty();
+      console.log(formattedData);
       expect(formattedData).toEqual(JSON.stringify(resultData, null, 2));
     });
   });

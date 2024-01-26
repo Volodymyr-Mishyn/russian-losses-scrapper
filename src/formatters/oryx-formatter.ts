@@ -71,8 +71,9 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
     };
   }
 
-  private _extractCountAndName(text: string): { count: number; name: string } | null {
-    const match = text.match(/^(\d+) (.+):$/);
+  private _extractNameAndCount(text: string): { count: number; name: string } | null {
+    const cleanedText = text.replace(/&nbsp;/g, ' ').trim();
+    const match = cleanedText.match(/^(\d+)\s+(.+):$/);
     if (match) {
       const count = parseInt(match[1], 10);
       const name = match[2];
@@ -101,6 +102,17 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
     }
   }
 
+  private _processHTMLToNameAndCount(source: string): string | null {
+    const $ = cheerio.load(`<div>${source}</div>`);
+    const div = $('div');
+    div.find('a').remove();
+    const text = div.text().trim();
+    if (text) {
+      return text;
+    }
+    return null;
+  }
+
   private _processEntityListElement(source: string): OryxDetailedEntity | null {
     const oryxEntity: OryxDetailedEntity = {
       name: '',
@@ -112,21 +124,18 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
       damagedAndCaptured: { count: 0, list: [] },
       damagedAndAbandoned: { count: 0, list: [] },
     };
-    const $ = cheerio.load(`<div>${source}</div>`);
-    const extractedText = $('div')
-      .contents()
-      .filter((_, node) => {
-        return node.type === 'text' && $(node).prev().is('img');
-      })
-      .text()
-      .trim();
-    const countAndNameMatch = this._extractCountAndName(extractedText);
+    const nameAndCount = this._processHTMLToNameAndCount(source);
+    if (!nameAndCount) {
+      return null;
+    }
+    const countAndNameMatch = this._extractNameAndCount(nameAndCount);
     if (!countAndNameMatch) {
       return null;
     }
     const { count, name } = countAndNameMatch;
     oryxEntity.name = name;
     oryxEntity.count = count;
+    const $ = cheerio.load(`<div>${source}</div>`);
     const detailElements = $('a');
     detailElements.toArray().forEach((linkElement) => {
       const text = $(linkElement).text().toLowerCase() || '';
