@@ -22,7 +22,14 @@ const categoryToActual: Array<[string, keyof OryxDetailedEntityInfo]> = [
   ['abandoned and destroyed', 'destroyed'],
   ['captured and later destroyed', 'destroyed'],
   ['abandoned and later destroyed', 'destroyed'],
+  ['destroyed on the ground', 'destroyed'],
+  ['sunk', 'destroyed'],
+  ['destroyed in a non-combat related incident', 'destroyed'],
+  ['damaged beyond economical repair', 'damaged'],
+  ['damaged beyond economical repair', 'damaged'],
+  ['damaged on the ground', 'damaged'],
   ['captured and stripped', 'captured'],
+  ['stripped and captured', 'captured'],
 ];
 const categoryMap = new Map<string, keyof OryxDetailedEntityInfo>(categoryToActual);
 export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> {
