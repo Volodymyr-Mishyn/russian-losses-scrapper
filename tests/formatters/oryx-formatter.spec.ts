@@ -544,7 +544,6 @@ describe('ORYXFormatter', () => {
   describe('formatPretty', () => {
     it('should format the scrapped data into string with indents', async () => {
       const formattedData = await formatter.formatPretty();
-      console.log(formattedData);
       expect(formattedData).toEqual(JSON.stringify(resultData, null, 2));
     });
   });
