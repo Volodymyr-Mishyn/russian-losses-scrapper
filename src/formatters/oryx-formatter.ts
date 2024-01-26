@@ -17,6 +17,19 @@ const categoryToActual: Array<[string, keyof OryxDetailedEntityInfo]> = [
   ['abandoned', 'abandoned'],
   ['damaged and captured', 'damagedAndCaptured'],
   ['damaged and abandoned', 'damagedAndAbandoned'],
+  ['damaged and abanonded', 'damagedAndAbandoned'],
+  ['captured and destroyed', 'destroyed'],
+  ['abandoned and destroyed', 'destroyed'],
+  ['captured and later destroyed', 'destroyed'],
+  ['abandoned and later destroyed', 'destroyed'],
+  ['destroyed on the ground', 'destroyed'],
+  ['sunk', 'destroyed'],
+  ['destroyed in a non-combat related incident', 'destroyed'],
+  ['damaged beyond economical repair', 'damaged'],
+  ['damaged beyond economical repair', 'damaged'],
+  ['damaged on the ground', 'damaged'],
+  ['captured and stripped', 'captured'],
+  ['stripped and captured', 'captured'],
 ];
 const categoryMap = new Map<string, keyof OryxDetailedEntityInfo>(categoryToActual);
 export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> {
@@ -37,18 +50,25 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
   }
 
   private _processTitleStat(title: string): OryxStat {
-    const statsRegex = /(\d+)/g;
-    const statsMatches = title.match(statsRegex);
-    if (!statsMatches || statsMatches.length < 1) {
-      throw new Error('Statistics not found');
-    }
-    return {
-      count: this._processStringNumber(statsMatches[0]),
-      destroyed: this._processStringNumber(statsMatches[1]),
-      damaged: this._processStringNumber(statsMatches[2]),
-      abandoned: this._processStringNumber(statsMatches[3]),
-      captured: this._processStringNumber(statsMatches[4]),
+    const titleLower = title.toLowerCase();
+    const totalRegex = /(\d+), of which/;
+    const destroyedRegex = /destroyed:\s*(\d+)/;
+    const damagedRegex = /damaged:\s*(\d+)/;
+    const abandonedRegex = /abandoned:\s*(\d+)/;
+    const capturedRegex = /captured:\s*(\d+)/;
+
+    const findNumber = (pattern: RegExp): number => {
+      const match = titleLower.match(pattern);
+      return match ? this._processStringNumber(match[1]) : 0;
     };
+    const a = {
+      count: findNumber(totalRegex),
+      destroyed: findNumber(destroyedRegex),
+      damaged: findNumber(damagedRegex),
+      abandoned: findNumber(abandonedRegex),
+      captured: findNumber(capturedRegex),
+    };
+    return a;
   }
 
   private _processTitle(title: string): OryxStatRoot {
@@ -58,8 +78,9 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
     };
   }
 
-  private _extractCountAndName(text: string): { count: number; name: string } | null {
-    const match = text.match(/^(\d+) (.+):$/);
+  private _extractNameAndCount(text: string): { count: number; name: string } | null {
+    const cleanedText = text.replace(/&nbsp;/g, ' ').trim();
+    const match = cleanedText.match(/^(\d+)\s+(.+):$/);
     if (match) {
       const count = parseInt(match[1], 10);
       const name = match[2];
@@ -82,14 +103,21 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
     if (link) {
       oryxEntity[categoryKey].list.push(link);
     }
-    let numbers = splitString.join().match(/\d+/g);
+    let numbers = text.match(/\d+/g);
     if (numbers && numbers?.length > 0) {
-      const maxValue = numbers.at(-1) || '0';
-      const numberValue = this._processStringNumber(maxValue);
-      if (oryxEntity[categoryKey].count < numberValue) {
-        oryxEntity[categoryKey].count = numberValue;
-      }
+      oryxEntity[categoryKey].count = oryxEntity[categoryKey].count + numbers.length;
     }
+  }
+
+  private _processHTMLToNameAndCount(source: string): string | null {
+    const $ = cheerio.load(`<div>${source}</div>`);
+    const div = $('div');
+    div.find('a').remove();
+    const text = div.text().trim();
+    if (text) {
+      return text;
+    }
+    return null;
   }
 
   private _processEntityListElement(source: string): OryxDetailedEntity | null {
@@ -103,21 +131,18 @@ export class OryxFormatter extends Formatter<OryxScrapResult, OryxFormatResult> 
       damagedAndCaptured: { count: 0, list: [] },
       damagedAndAbandoned: { count: 0, list: [] },
     };
-    const $ = cheerio.load(`<div>${source}</div>`);
-    const extractedText = $('div')
-      .contents()
-      .filter((_, node) => {
-        return node.type === 'text' && $(node).prev().is('img');
-      })
-      .text()
-      .trim();
-    const countAndNameMatch = this._extractCountAndName(extractedText);
+    const nameAndCount = this._processHTMLToNameAndCount(source);
+    if (!nameAndCount) {
+      return null;
+    }
+    const countAndNameMatch = this._extractNameAndCount(nameAndCount);
     if (!countAndNameMatch) {
       return null;
     }
     const { count, name } = countAndNameMatch;
     oryxEntity.name = name;
     oryxEntity.count = count;
+    const $ = cheerio.load(`<div>${source}</div>`);
     const detailElements = $('a');
     detailElements.toArray().forEach((linkElement) => {
       const text = $(linkElement).text().toLowerCase() || '';

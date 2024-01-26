@@ -36,6 +36,10 @@ export class UkrainianLossesOryxPageScrapper extends OryxPageScrapper {
                 resultObject.title = currentElement.textContent;
               }
             }
+          } else if (currentElement?.tagName === DIV_TAG) {
+            if (currentElement.children[0]?.tagName === H3_TAG) {
+              traverseList([...currentElement.children], resultObject);
+            }
           }
           index++;
         }
@@ -49,6 +53,7 @@ export class UkrainianLossesOryxPageScrapper extends OryxPageScrapper {
         entities: [],
       };
       traverseList(infoList, result);
+      // debugger;
       return result;
     });
   }

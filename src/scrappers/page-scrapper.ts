@@ -24,6 +24,7 @@ export abstract class PageScrapper<T> {
       });
       Logger.getInstance().info('navigation complete. Scrapping...');
       const result = await this.innerScrap();
+      // Logger.getInstance().info('result: ' + JSON.stringify(result));
       Logger.getInstance().info('Scrapping complete: ' + `${JSON.stringify(result).length}`);
       const date = new Date().toISOString();
       return {
