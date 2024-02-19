@@ -37,7 +37,7 @@ export class UkrainianLossesOryxPageScrapper extends OryxPageScrapper {
               }
             }
           } else if (currentElement?.tagName === DIV_TAG) {
-            if (currentElement.children[0]?.tagName === H3_TAG) {
+            if (currentElement.children && currentElement.children[0]?.tagName === H3_TAG) {
               traverseList([...currentElement.children], resultObject);
             }
           }

@@ -20,7 +20,7 @@ export abstract class PageScrapper<T> {
       Logger.getInstance().info('attempting to go to page');
       await this.page.goto(this.baseUrl, {
         waitUntil: 'networkidle2',
-        timeout: 60000,
+        timeout: 90000,
       });
       Logger.getInstance().info('navigation complete. Scrapping...');
       const result = await this.innerScrap();
