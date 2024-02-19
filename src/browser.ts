@@ -7,10 +7,11 @@ export async function startBrowser(headless: boolean = true): Promise<Browser | 
     Logger.getInstance().info('Opening the browser');
     browser = await launch({
       headless: headless ? 'new' : false,
-      args: ['--disable-setuid-sandbox', '--disable-dev-shm-usage', '--auto-open-devtools-for-tabs', '--no-sandbox'],
+      args: ['--disable-setuid-sandbox', '--disable-dev-shm-usage', '--single-process', '--no-sandbox'],
       ignoreHTTPSErrors: true,
       dumpio: false,
     });
+    //'--auto-open-devtools-for-tabs'
     Logger.getInstance().info('Opening the browser successful');
     return browser;
   } catch (err) {

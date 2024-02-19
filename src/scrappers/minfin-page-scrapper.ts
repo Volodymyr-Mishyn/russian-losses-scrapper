@@ -7,7 +7,11 @@ import { Source } from '../models/scrap-parameters';
 export class MinfinPageScrapper extends PageScrapper<MODScrapResult> {
   protected baseUrl: string = 'https://index.minfin.com.ua/en/russian-invading/casualties/';
 
-  constructor(page: Page, private type: Source, private _full = false) {
+  constructor(
+    page: Page,
+    private type: Source,
+    private _full = false,
+  ) {
     super(page, type);
   }
 
@@ -22,7 +26,7 @@ export class MinfinPageScrapper extends PageScrapper<MODScrapResult> {
   }
 
   private async _scrapAllData(): Promise<Array<MODDayScrapResult>> {
-    await this.page.waitForSelector('ul.see-also');
+    await this.page.waitForSelector('ul.see-also', { timeout: 60000 });
     return this.page.$$eval(
       'ul.see-also > li.gold',
       (elements: Array<Element>) =>
@@ -44,7 +48,7 @@ export class MinfinPageScrapper extends PageScrapper<MODScrapResult> {
   }
 
   protected async innerScrap(): Promise<MODScrapResult> {
-    await this.page.waitForSelector('#idx-content');
+    await this.page.waitForSelector('#idx-content', { timeout: 60000 });
     if (this._full) {
       await this._openMonthsLinks();
     }
