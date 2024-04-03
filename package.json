@@ -1,6 +1,6 @@
 {
   "name": "russian-losses-scrapper",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Application for scrapping russian losses data",
   "author": "Volodymyr Mishyn",
   "license": "ISC",
