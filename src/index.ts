@@ -11,7 +11,6 @@ import { OutputManagerFactory } from './output-managers/output-manager.factory';
 import { Logger } from './_helpers/logger';
 
 const cliArgs = minimist(process.argv.slice(2));
-const startParameters: StartParameters = processCLIParameters(cliArgs);
 Logger.getInstance().info(`scape app started with parameters: ${cliArgs.source} ${cliArgs.oryxType || ''}`);
 
 async function scrapeData(parameters: StartParameters, page: Page) {
@@ -36,7 +35,7 @@ async function outputData(parameters: StartParameters, scrappedData: ScrapResult
   }
 }
 
-async function main(browser: Browser) {
+async function main(browser: Browser, startParameters: StartParameters) {
   Logger.getInstance().info('attempting to open new page');
   const page = await browser.newPage();
   Logger.getInstance().info('page opened');
@@ -44,15 +43,30 @@ async function main(browser: Browser) {
   await outputData(startParameters, scrappedData);
 }
 
+async function runScraper(parameters: StartParameters) {
+  (async () => {
+    const browser = await startBrowser(parameters.headless);
+    if (!browser) {
+      return;
+    }
+    try {
+      await main(browser, parameters);
+    } catch (error) {
+      console.error(error);
+    }
+    await browser.close();
+  })();
+}
+
+/**
+ * Preserved to maintain working as a process mode;
+ */
 (async () => {
-  const browser = await startBrowser(startParameters.headless);
-  if (!browser) {
+  if (!cliArgs.source) {
     return;
   }
-  try {
-    await main(browser);
-  } catch (error) {
-    console.error(error);
-  }
-  await browser.close();
+  const startParameters: StartParameters = processCLIParameters(cliArgs);
+  runScraper(startParameters);
 })();
+
+export { runScraper, StartParameters };
