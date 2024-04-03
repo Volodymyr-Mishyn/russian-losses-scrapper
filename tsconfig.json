@@ -6,11 +6,14 @@
     "rootDir": "./",
     "strict": true,
     "moduleResolution": "node",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
     "esModuleInterop": true,
     "baseUrl": "./",
     "paths": {
       "src/*": ["./src/*"]
     }
   },
-  "exclude": ["./node_modules"]
+  "exclude": ["./node_modules", "dist"]
 }
