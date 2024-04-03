@@ -6,10 +6,7 @@ import { Logger } from '../_helpers/logger';
 export abstract class PageScrapper<T> {
   protected abstract baseUrl: string;
   protected page: Page;
-  constructor(
-    page: Page,
-    private _type: Source,
-  ) {
+  constructor(page: Page, private _type: Source) {
     this.page = page;
   }
   protected abstract innerScrap(): Promise<T>;
