@@ -5,6 +5,7 @@ import { HTTPOutputManager } from './http-output-manager';
 import { ProcessOutputManager } from './process-output.manager';
 import { StartParameters } from '../models/scrap-parameters';
 import { ScrapResult } from '../models/scrap-results/scrap-result';
+import { PlainOutputManager } from './plain-output-manager';
 
 export class OutputManagerFactory {
   static create(parameters: StartParameters, scrappedData: ScrapResult<unknown>): OutputManager {
@@ -16,6 +17,8 @@ export class OutputManagerFactory {
         return new HTTPOutputManager(scrappedData, outputPath);
       case OutputTypes.PROCESS:
         return new ProcessOutputManager(scrappedData, outputPath);
+      case OutputTypes.NONE:
+        return new PlainOutputManager(scrappedData, outputPath);
       default:
         throw new Error(`No output manager for provided type: ${type}`);
     }

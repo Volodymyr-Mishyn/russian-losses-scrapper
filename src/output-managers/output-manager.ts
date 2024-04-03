@@ -6,26 +6,23 @@ import { ScrapResult } from '../models/scrap-results/scrap-result';
 
 export abstract class OutputManager {
   protected formatter!: Formatter<unknown, unknown>;
-  constructor(
-    protected scrappedData: ScrapResult<unknown>,
-    protected outputPath: string,
-  ) {
+  constructor(protected scrappedData: ScrapResult<unknown>, protected outputPath: string = '') {
     this.formatter = FormatterFactory.create(scrappedData);
   }
 
   protected abstract formatData(): Promise<unknown>;
-  protected abstract innerSend(output: Output): Promise<void>;
+  protected abstract innerSend(output: Output): Promise<void | Output>;
 
-  protected async sendOutput(output: Output): Promise<void> {
+  protected async sendOutput(output: Output): Promise<void | Output> {
     try {
-      await this.innerSend(output);
+      return await this.innerSend(output);
     } catch (error) {
       const errorMessage = (error as any).message;
       console.log('Error while performing output:', errorMessage);
     }
   }
 
-  protected async processOutput(): Promise<void> {
+  protected async processOutput(): Promise<void | Output> {
     let output: Output;
     if (!this.scrappedData.status) {
       output = {
@@ -48,12 +45,13 @@ export abstract class OutputManager {
         };
       }
     }
-    await this.sendOutput(output);
+    return await this.sendOutput(output);
   }
 
-  public async output(): Promise<void> {
+  public async output(): Promise<void | Output> {
     Logger.getInstance().info('outputting data');
-    await this.processOutput();
+    const result = await this.processOutput();
     Logger.getInstance().info('output complete');
+    return result;
   }
 }

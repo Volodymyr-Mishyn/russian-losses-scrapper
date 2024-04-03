@@ -2,11 +2,9 @@ const minimist = require('minimist');
 import { Browser, Page } from 'puppeteer';
 import { processCLIParameters } from './_helpers/process-cli-parameters';
 import { startBrowser } from './browser';
-import { FormatterFactory } from './formatters/formatter.factory';
 import { StartParameters } from './models/scrap-parameters';
 import { PageScrapperFactory } from './scrappers/page-scrapper.factory';
 import { ScrapResult } from './models/scrap-results/scrap-result';
-import { OutputTypes } from './models/output-parameters';
 import { OutputManagerFactory } from './output-managers/output-manager.factory';
 import { Logger } from './_helpers/logger';
 
@@ -15,20 +13,12 @@ Logger.getInstance().info(`scape app started with parameters: ${cliArgs.source} 
 
 async function scrapeData(parameters: StartParameters, page: Page) {
   const scrapper = PageScrapperFactory.create(parameters, page);
-  return await scrapper.scrapPage();
+  return scrapper.scrapPage();
 }
 
 async function outputData(parameters: StartParameters, scrappedData: ScrapResult<unknown>): Promise<unknown | void> {
-  if (parameters.output.type === OutputTypes.NONE) {
-    const formatter = FormatterFactory.create(scrappedData);
-    const result = await formatter.formatAsIs();
-    if (result) {
-      return result;
-    }
-  } else {
-    const outputManager = OutputManagerFactory.create(parameters, scrappedData);
-    return await outputManager.output();
-  }
+  const outputManager = OutputManagerFactory.create(parameters, scrappedData);
+  return outputManager.output();
 }
 
 async function main(browser: Browser, startParameters: StartParameters) {
@@ -37,7 +27,7 @@ async function main(browser: Browser, startParameters: StartParameters) {
   Logger.getInstance().info('page opened');
   const scrappedData = await scrapeData(startParameters, page);
   await browser.close();
-  return await outputData(startParameters, scrappedData);
+  return outputData(startParameters, scrappedData);
 }
 
 async function runScraper(parameters: StartParameters): Promise<unknown | void> {
