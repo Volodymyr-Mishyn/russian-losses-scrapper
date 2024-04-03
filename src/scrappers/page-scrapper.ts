@@ -13,7 +13,15 @@ export abstract class PageScrapper<T> {
 
   public async scrapPage(): Promise<ScrapResult<T>> {
     try {
-      this.page.on('console', (msg) => Logger.getInstance().info(`PAGE LOG: ${msg.text()}`));
+      const logMap = new Map();
+      this.page.on('console', (msg) => {
+        const logText = `PAGE LOG: ${msg.text()}`;
+        if (logMap.has(logText)) {
+          logMap.set(logText, logMap.get(logText) + 1);
+        } else {
+          logMap.set(logText, 1);
+        }
+      });
       Logger.getInstance().info('attempting to go to page');
       await this.page.goto(this.baseUrl, {
         waitUntil: 'networkidle2',
@@ -21,6 +29,10 @@ export abstract class PageScrapper<T> {
       });
       Logger.getInstance().info('navigation complete. Scrapping...');
       const result = await this.innerScrap();
+      Logger.getInstance().info('Logs of page:');
+      logMap.forEach((count, logText) => {
+        console.log(`${logText} (${count})`);
+      });
       // Logger.getInstance().info('result: ' + JSON.stringify(result));
       Logger.getInstance().info('Scrapping complete: ' + `${JSON.stringify(result).length}`);
       const date = new Date().toISOString();
