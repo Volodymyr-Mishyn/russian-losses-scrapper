@@ -18,16 +18,12 @@ async function scrapeData(parameters: StartParameters, page: Page) {
   return await scrapper.scrapPage();
 }
 
-async function formatData(scrappedData: ScrapResult<unknown>) {
-  const formatter = FormatterFactory.create(scrappedData);
-  return await formatter.format();
-}
-
-async function outputData(parameters: StartParameters, scrappedData: ScrapResult<unknown>) {
+async function outputData(parameters: StartParameters, scrappedData: ScrapResult<unknown>): Promise<unknown | void> {
   if (parameters.output.type === OutputTypes.NONE) {
-    const result = await formatData(scrappedData);
+    const formatter = FormatterFactory.create(scrappedData);
+    const result = await formatter.formatAsIs();
     if (result) {
-      console.log(result);
+      return result;
     }
   } else {
     const outputManager = OutputManagerFactory.create(parameters, scrappedData);
@@ -40,22 +36,20 @@ async function main(browser: Browser, startParameters: StartParameters) {
   const page = await browser.newPage();
   Logger.getInstance().info('page opened');
   const scrappedData = await scrapeData(startParameters, page);
-  await outputData(startParameters, scrappedData);
+  await browser.close();
+  return await outputData(startParameters, scrappedData);
 }
 
-async function runScraper(parameters: StartParameters) {
-  (async () => {
-    const browser = await startBrowser(parameters.headless);
-    if (!browser) {
-      return;
-    }
-    try {
-      await main(browser, parameters);
-    } catch (error) {
-      console.error(error);
-    }
-    await browser.close();
-  })();
+async function runScraper(parameters: StartParameters): Promise<unknown | void> {
+  const browser = await startBrowser(parameters.headless);
+  if (!browser) {
+    return;
+  }
+  try {
+    return await main(browser, parameters);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 /**
