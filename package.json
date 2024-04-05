@@ -34,7 +34,8 @@
     "cheerio": "^1.0.0-rc.12",
     "lodash": "^4.17.21",
     "minimist": "^1.2.8",
-    "puppeteer": "^21.6.0",
+    "puppeteer": "~21.6.0",
+    "puppeteer-core": "^22.6.3",
     "winston": "^3.11.0"
   },
   "devDependencies": {
