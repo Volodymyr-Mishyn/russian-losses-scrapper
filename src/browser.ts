@@ -10,6 +10,7 @@ export async function startBrowser(headless: boolean = true): Promise<Browser | 
       args: ['--disable-setuid-sandbox', '--disable-dev-shm-usage', '--single-process', '--no-sandbox'],
       ignoreHTTPSErrors: true,
       dumpio: false,
+      devtools: headless ? false : true,
     });
     //'--auto-open-devtools-for-tabs'
     Logger.getInstance().info('Opening the browser successful');
