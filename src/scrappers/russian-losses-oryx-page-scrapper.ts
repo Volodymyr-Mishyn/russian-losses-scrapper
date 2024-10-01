@@ -4,7 +4,7 @@ import { OryxPageScrapper } from './oryx-page-scrapper';
 export class RussianLossesOryxPageScrapper extends OryxPageScrapper {
   protected baseUrl: string = 'https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html';
   protected scrapContainerData(): Promise<OryxScrapResult> {
-    return this.page.$$eval('div.post-body.entry-content', (container: Array<Element>) => {
+    return this.page.$$eval('div.post-body.entry-content', async (container: Array<Element>) => {
       if (container.length === 0 || container.length > 1) {
         return null;
       }
@@ -13,8 +13,10 @@ export class RussianLossesOryxPageScrapper extends OryxPageScrapper {
         return null;
       }
       const infoList = [...lastDiv.children];
+      console.log('infoList:', infoList);
       const result: any = {
         title: '',
+        additionalInfo: '',
         entities: [],
       };
       let index = 0;
@@ -25,6 +27,7 @@ export class RussianLossesOryxPageScrapper extends OryxPageScrapper {
       while (index < length - 1) {
         const currentElement = infoList[index];
         const nextElement = infoList[index + 1];
+        const nextNextElement = infoList[index + 2];
 
         if (currentElement?.tagName === H3_TAG) {
           if (nextElement?.tagName === UL_TAG) {
@@ -33,12 +36,16 @@ export class RussianLossesOryxPageScrapper extends OryxPageScrapper {
               list: [...nextElement.children].map((liElement) => liElement.innerHTML),
             });
             index++;
-          } else if (nextElement?.tagName === P_TAG) {
+          } else if (nextElement?.tagName === H3_TAG && nextNextElement?.tagName === H3_TAG) {
+            result.additionalInfo = nextElement.textContent + ' ' + nextNextElement.textContent;
+          }
+          if (currentElement?.textContent?.includes('Russia -')) {
             result.title = currentElement.textContent;
           }
         }
         index++;
       }
+      // await new Promise((resolve) => setTimeout(resolve, 300000));
       return result;
     });
   }
